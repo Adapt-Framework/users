@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<adapt_framework>
+    <bundle>
+        <name>users</name>
+        <label>Users</label>
+        <label>Foundation bundle for basic user management</label>
+        <version>1.0.0</version>
+        <type>extension</type>
+        <description>Provides the base models for building user centric apps</description>
+        <copyright>2015 Adapt Framework</copyright>
+        <settings>
+            <category name="Users">
+                <setting>
+                    <name>users.salt_length</name>
+                    <label>Salt length to use when encrypting passwords</label>
+                    <default_value>30</default_value>
+                </setting>
+                <setting>
+                    <name>users.allow_registrations</name>
+                    <label>Should a register now option be displayed next to the login?</label>
+                    <allowed_values>
+                        <value>Yes</value>
+                        <value>No</value>
+                    </allowed_values>
+                    <default_value>Yes</default_value>
+                </setting>
+                <setting>
+                    <name>users.username_type</name>
+                    <label>Should the login use a username or email address?</label>
+                    <allowed_values>
+                        <value>Email</value>
+                        <value>Username</value>
+                    </allowed_values>
+                    <default_value>Email</default_value>
+                </setting>
+                <setting>
+                    <name>users.max_auto_login_count</name>
+                    <label>How many time can a login token be used?</label>
+                    <default_value>5</default_value>
+                </setting>
+                <setting>
+                    <note>TODO: MOVE THIS TO roles_and_permissions</note>
+                    <name>users.default_role</name>
+                    <label>Default role group for new users</label>
+                    <default_value>Users</default_value>
+                </setting>
+            </category>
+        </settings>
+        <depends_on>
+            <bundle>contacts</bundle>
+            <bundle>sessions</bundle>
+            <bundle>bootstrap_views</bundle>
+        </depends_on>
+    </bundle>
+</adapt_framework>
