@@ -450,52 +450,170 @@ $field->save();
 //$field->mandatory = 'Yes';
 //$field->save();$field->save();
 //
-//
-//
-///*
-// * Add pre-registration form (email)
-// */
-//$form = new model_form();
-//$form->bundle_name = 'users';
-//$form->submission_url = '/';
-//$form->actions = 'join';
-//$form->method = 'post';
-//$form->name = 'join_email';
-//$form->title = 'Join';
-//$form->style = 'Standard';
-//$form->show_steps = 'No';
-//$form->show_processing_page = 'No';
-//$form->save();
-//
-//$page = new model_form_page();
-//$page->form_id = $form->form_id;
-//$page->bundle_name = 'users';
-//$page->priority = 1;
-//$page->save();
-//
-//$primary_button = new model_form_button_style();
-//$primary_button->load_by_name('Primary');
-//$primary_button = $primary_button->form_button_style_id;
-//
-//$button = new model_form_page_button();
-//$button->form_page_id = $page->form_page_id;
-//$button->bundle_name = "sessions";
-//$button->form_button_style_id = $primary_button;
-//$button->label = 'Join now';
-//$button->action = 'Next page';
-//$button->priority = 1;
-//$button->save();
-//
-//$section = new model_form_page_section();
-//$section->form_page_id = $page->form_page_id;
-//$section->bundle_name = 'users';
-//$section->priority = 1;
-//$section->repeatable = 'No';
-//$section->save();
-//
-//
-//
-///* Fields */
+
+
+/*
+ * Add pre-registration form (email)
+ */
+$form = new model_form();
+$form->bundle_name = 'users';
+$form->submission_url = '/';
+$form->actions = 'join';
+$form->method = 'post';
+$form->name = 'join_email';
+$form->title = 'Join';
+$form->show_steps = 'No';
+$form->show_processing_page = 'Yes';
+$form->save();
+
+$page = new model_form_page();
+$page->form_id = $form->form_id;
+$page->bundle_name = 'users';
+$page->priority = 1;
+$page->save();
+
+$primary_button = new model_form_button_style();
+$primary_button->load_by_name('Primary');
+$primary_button = $primary_button->form_button_style_id;
+
+$button = new model_form_page_button();
+$button->form_page_id = $page->form_page_id;
+$button->bundle_name = "users";
+$button->form_button_style_id = $primary_button;
+$button->label = 'Join now';
+$button->action = 'Next page';
+$button->priority = 1;
+$button->save();
+
+$standard_layout = new model_form_page_section_layout();
+$standard_layout->load_by_name('standard');
+
+$section = new model_form_page_section();
+$section->form_page_id = $page->form_page_id;
+$section->bundle_name = 'users';
+$section->form_page_section_layout_id = $standard_layout->form_page_section_layout_id;
+$section->priority = 1;
+$section->repeatable = 'No';
+$section->save();
+
+$simple_group = new model_form_page_section_group_layout();
+$simple_group->load_by_name('simple');
+
+$group = new model_form_page_section_group();
+$group->bundle_name = 'users';
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $simple_group->form_page_section_group_layout_id;
+$group->priority = 1;
+$group->save();
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
+$field->bundle_name = 'users';
+$field->priority = 1;
+$type = new model_form_field_type();
+$type->load_by_name('Text');
+$field->form_field_type_id = $type->form_field_type_id;
+$field->name = 'email';
+$field->label = 'Email';
+$field->data_type_id = $adapt->data_source->get_data_type_id('email_address');
+$field->mandatory = 'Yes';
+$field->save();
+
+$group = new model_form_page_section_group();
+$group->bundle_name = 'users';
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $simple_group->form_page_section_group_layout_id;
+$group->priority = 2;
+$group->save();
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
+$field->bundle_name = 'users';
+$field->priority = 1;
+$type = new model_form_field_type();
+$type->load_by_name('Password confirmation with indicator');
+$field->form_field_type_id = $type->form_field_type_id;
+$field->name = 'password';
+$field->label = 'Password';
+$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
+$field->max_length = 64;
+$field->mandatory = 'Yes';
+$field->save();
+
+
+/*
+ * Registration form (username)
+ */
+
+
+/*
+ * Registration form (email)
+ */
+$form = new model_form();
+$form->bundle_name = 'users';
+$form->submission_url = '/';
+$form->actions = 'join';
+$form->method = 'post';
+$form->name = 'register_email';
+$form->title = 'Create your account';
+$form->show_steps = 'No';
+$form->show_processing_page = 'Yes';
+$form->save();
+
+$page = new model_form_page();
+$page->form_id = $form->form_id;
+$page->bundle_name = 'users';
+$page->priority = 1;
+$page->save();
+
+$primary_button = new model_form_button_style();
+$primary_button->load_by_name('Primary');
+$primary_button = $primary_button->form_button_style_id;
+
+$button = new model_form_page_button();
+$button->form_page_id = $page->form_page_id;
+$button->bundle_name = "users";
+$button->form_button_style_id = $primary_button;
+$button->label = 'Create my account';
+$button->action = 'Next page';
+$button->priority = 1;
+$button->save();
+
+$standard_layout = new model_form_page_section_layout();
+$standard_layout->load_by_name('standard');
+
+$section = new model_form_page_section();
+$section->form_page_id = $page->form_page_id;
+$section->bundle_name = 'users';
+$section->form_page_section_layout_id = $standard_layout->form_page_section_layout_id;
+$section->priority = 1;
+$section->repeatable = 'No';
+$section->save();
+
+$simple_group = new model_form_page_section_group_layout();
+$simple_group->load_by_name('simple');
+
+$group = new model_form_page_section_group();
+$group->bundle_name = 'users';
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $simple_group->form_page_section_group_layout_id;
+$group->priority = 1;
+$group->save();
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
+$field->bundle_name = 'users';
+$field->priority = 1;
+$type = new model_form_field_type();
+$type->load_by_name('Text');
+$field->form_field_type_id = $type->form_field_type_id;
+$field->name = 'email';
+$field->label = 'Email';
+$field->data_type_id = $adapt->data_source->get_data_type_id('email_address');
+$field->mandatory = 'Yes';
+$field->save();
+
+/* Fields */
 //$field = new model_form_page_section_field();
 //$field->form_page_section_id = $section->form_page_section_id;
 //$field->bundle_name = 'users';

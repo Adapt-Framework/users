@@ -97,7 +97,6 @@ $adapt->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 
  * Extend the root controller and add a action_sign_in
  */
 \application\controller_root::extend('action_sign_in', function($_this){
-    $_this->add_view(new html_pre(print_r($_this->request, true)));
     
     if ($_this->setting('users.username_type') == 'Email'){
         if (isset($_this->request['email']) && isset($_this->request['password'])){
@@ -127,13 +126,24 @@ $adapt->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 
                     $redirect_url = $_this->request['redirect_url'];
                 }
                 
-                header('location: ' . $redirect_url);
-                exit(0);
+                $_this->redirect($redirect_url, false);
+                //header('location: ' . $redirect_url);
+                //exit(0);
             }else{
-                $_this->add_view(new html_pre('Login failed'));
+                $errors['email'] = "Invalid email address or password, please try again.";
+                $_this->respond('sign-in', array('errors' => $errors));
+                
+                $_this->request('password', '');
+                
+                $_this->redirect($_this->request['current_url']);
             }
         }else{
-            $_this->add_view(new html_pre('Login missing info'));
+            $errors['email'] = "Invalid email address or password, please try again.";
+            $_this->respond('sign-in', array('errors' => $errors));
+            
+            $_this->request('password', '');
+            
+            $_this->redirect($_this->request['current_url']);
         }
     }else{
         if (isset($_this->request['username']) && isset($_this->request['password'])){
@@ -161,6 +171,25 @@ $adapt->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 
     //We need to clear any token cookies we have
     $_this->cookie('login_token', '', 1);
     $_this->session->user = new \extensions\users\model_user();
+});
+
+/*
+ * Extend the root controller and add action_join
+ */
+\application\controller_root::extend('action_join', function($_this){
+    $model = new model_user();
+    $errors = array();
+    if ($model->load_by_email_address($_this->request['email'])){
+        $errors['email'] = "This email address has already been registered.";
+        $_this->respond('join', array('errors' => $errors));
+        
+        $_this->request('password', '');
+        $_this->request('confirm_password', '');
+        
+        $_this->redirect($_this->request['current_url']);
+    }else{
+        print new html_pre('Not found');
+    }
 });
 
 

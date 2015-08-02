@@ -50,6 +50,7 @@
             <bundle>contacts</bundle>
             <bundle>sessions</bundle>
             <bundle>bootstrap_views</bundle>
+            <bundle>form_password_confirm</bundle>
         </depends_on>
     </bundle>
 </adapt_framework>
