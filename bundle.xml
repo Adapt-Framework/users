@@ -38,12 +38,6 @@
                     <label>How many time can a login token be used?</label>
                     <default_value>5</default_value>
                 </setting>
-                <setting>
-                    <note>TODO: MOVE THIS TO roles_and_permissions</note>
-                    <name>users.default_role</name>
-                    <label>Default role group for new users</label>
-                    <default_value>Users</default_value>
-                </setting>
             </category>
         </settings>
         <depends_on>
@@ -51,6 +45,7 @@
             <bundle>sessions</bundle>
             <bundle>bootstrap_views</bundle>
             <bundle>form_password_confirm</bundle>
+            <bundle>email</bundle>
         </depends_on>
     </bundle>
 </adapt_framework>

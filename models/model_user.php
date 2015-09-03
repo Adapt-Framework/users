@@ -32,7 +32,7 @@ namespace extensions\users{
         }
         
         public function mset_password($value){
-            $this->_data['password'] = self::hash_password($value);
+            $this->_data['password'] = self::hash_password($value, $this->is_loaded ? md5($this->user_id) : "");
             $this->password_change_required = 'No';
             return true;
         }

@@ -92,7 +92,9 @@ $adapt->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 
         $_this->add_view(new \extensions\users\view_login_panel(\extensions\users\view_login_panel::EMAIL));
     }
 });
- 
+
+
+
 /*
  * Extend the root controller and add a action_sign_in
  */
@@ -131,7 +133,7 @@ $adapt->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 
                 //exit(0);
             }else{
                 $errors['email'] = "Invalid email address or password, please try again.";
-                $_this->respond('sign-in', array('errors' => $errors));
+                $_this->respond('sign_in_email', array('errors' => $errors));
                 
                 $_this->request('password', '');
                 
@@ -171,6 +173,7 @@ $adapt->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 
     //We need to clear any token cookies we have
     $_this->cookie('login_token', '', 1);
     $_this->session->user = new \extensions\users\model_user();
+    $_this->redirect("/");
 });
 
 /*
@@ -179,16 +182,75 @@ $adapt->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 
 \application\controller_root::extend('action_join', function($_this){
     $model = new model_user();
     $errors = array();
-    if ($model->load_by_email_address($_this->request['email'])){
-        $errors['email'] = "This email address has already been registered.";
-        $_this->respond('join', array('errors' => $errors));
-        
-        $_this->request('password', '');
-        $_this->request('confirm_password', '');
-        
-        $_this->redirect($_this->request['current_url']);
+    if ($_this->setting('users.username_type') == 'Email'){
+        if ($model->load_by_email_address($_this->request['email'])){
+            $errors['email'] = "This email address has already been registered.";
+            $_this->respond('join_email', array('errors' => $errors));
+            
+            $_this->request('password', '');
+            $_this->request('confirm_password', '');
+            
+            $_this->redirect($_this->request['current_url']);
+        }else{
+            /* Create the user */
+            $contact = new model_contact();
+            $contact->title = 'Mr';
+            $contact->save();
+            
+            $email_type = new model_contact_email_type();
+            $email_type->load_by_name('Home');
+            
+            $contact_email = new model_contact_email();
+            $contact_email->contact_id = $contact->contact_id;
+            $contact_email->contact_email_type_id = $email_type->contact_email_type_id;
+            $contact_email->priority = 1;
+            $contact_email->email = $_this->request['email'];
+            $contact_email->save();
+            
+            $user = new \extensions\users\model_user();
+            $user->status = 'Active';
+            $user->contact_id = $contact->contact_id;
+            $user->username = 'contact_' . $contact->contact_id;
+            $user->password = $_this->_request['password'];
+            $user->password_change_required = 'No';
+            $user->save();
+            
+            /* Set the session */
+            $_this->session->user = $user;
+            
+            /* Should redirect at this point */
+            $this->redirect("/"); //TODO: Redirect back to the page where they came from
+        }
     }else{
-        print new html_pre('Not found');
+        /* Username */
+        if ($model->load_by_username($_this->request['username'])){
+            $errors['email'] = "This username has already been registered.";
+            $_this->respond('join_username', array('errors' => $errors));
+            
+            $_this->request('password', '');
+            $_this->request('confirm_password', '');
+            
+            $_this->redirect($_this->request['current_url']);
+        }else{
+            /* Create the user */
+            $contact = new model_contact();
+            $contact->title = 'Mr';
+            $contact->save();
+            
+            $user = new \extensions\users\model_user();
+            $user->status = 'Active';
+            $user->contact_id = $contact->contact_id;
+            $user->username = $_this->request['username'];
+            $user->password = $_this->_request['password'];
+            $user->password_change_required = 'No';
+            $user->save();
+            
+            /* Set the session */
+            $_this->session->user = $user;
+            
+            /* Should redirect at this point */
+            $this->redirect("/"); //TODO: Redirect back to the page where they came from
+        }
     }
 });
 
