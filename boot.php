@@ -215,6 +215,11 @@ $adapt->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 
             $user->password_change_required = 'No';
             $user->save();
             
+            /* Send user registration email */
+            $_this->email_account->new_email_from_template('user.registration')
+                ->to($contact_email)
+                ->send();
+            
             /* Set the session */
             $_this->session->user = $user;
             

@@ -1,6 +1,6 @@
 <?php
 
-namespace extensions\users{
+namespace adapt\users{
     
     /* Prevent Direct Access */
     defined('ADAPT_STARTED') or die;
@@ -17,9 +17,9 @@ namespace extensions\users{
             if (isset($token)){
                 $sql = $this->data_source->sql;
                 
-                $sql->select(new \frameworks\adapt\sql('*'))
+                $sql->select(new \adapt\sql('*'))
                     ->from($this->table_name)
-                    ->where(new \frameworks\adapt\sql_condition(new \frameworks\adapt\sql('token'), '=', $token));
+                    ->where(new \adapt\sql_condition(new \adapt\sql('token'), '=', $token));
                 
                 /* Get the results */
                 $results = $sql->execute()->results();

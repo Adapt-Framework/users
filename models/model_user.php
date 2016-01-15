@@ -1,6 +1,6 @@
 <?php
 
-namespace extensions\users{
+namespace adapt\users{
     
     /* Prevent Direct Access */
     defined('ADAPT_STARTED') or die;
@@ -41,7 +41,7 @@ namespace extensions\users{
             $children = $this->get();
             
             foreach($children as $child){
-                if ($child instanceof model && $child->table_name == 'contact'){
+                if ($child instanceof \adapt\model && $child->table_name == 'contact'){
                     return $child;
                 }
             }
@@ -61,20 +61,20 @@ namespace extensions\users{
                 if (in_array('username', $fields)){
                     $sql = $this->data_source->sql;
                     
-                    $sql->select(new \frameworks\adapt\sql('*'))
+                    $sql->select(new \adapt\sql('*'))
                         ->from($this->table_name);
                     
                     /* Do we have a date_deleted field? */
                     if (in_array('date_deleted', $fields)){
                         
-                        $name_condition = new \frameworks\adapt\sql_condition(new \frameworks\adapt\sql('username'), '=', $username);
-                        $date_deleted_condition = new \frameworks\adapt\sql_condition(new \frameworks\adapt\sql('date_deleted'), 'is', new \frameworks\adapt\sql('null'));
+                        $name_condition = new \adapt\sql_condition(new \adapt\sql('username'), '=', $username);
+                        $date_deleted_condition = new \adapt\sql_condition(new \adapt\sql('date_deleted'), 'is', new \adapt\sql('null'));
                         
-                        $sql->where(new \frameworks\adapt\sql_and($name_condition, $date_deleted_condition));
+                        $sql->where(new \adapt\sql_and($name_condition, $date_deleted_condition));
                         
                     }else{
                         
-                        $sql->where(new \frameworks\adapt\sql_condition(new \frameworks\adapt\sql('username'), '=', $username));
+                        $sql->where(new \adapt\sql_condition(new \adapt\sql('username'), '=', $username));
                     }
                     
                     /* Get the results */
@@ -123,22 +123,22 @@ namespace extensions\users{
                 
                 $sql = $this->data_source->sql;
                 
-                $sql->select(new \frameworks\adapt\sql('*'))
+                $sql->select(new \adapt\sql('*'))
                     ->from($this->table_name, 'u')
-                    ->join('contact', 'c', new \frameworks\adapt\sql_condition(new \frameworks\adapt\sql('u.contact_id'), '=', new \frameworks\adapt\sql('c.contact_id')))
-                    ->join('contact_email', 'ce', new \frameworks\adapt\sql_condition(new \frameworks\adapt\sql('c.contact_id'), '=', new \frameworks\adapt\sql('ce.contact_id')));
+                    ->join('contact', 'c', new \adapt\sql_condition(new \adapt\sql('u.contact_id'), '=', new \adapt\sql('c.contact_id')))
+                    ->join('contact_email', 'ce', new \adapt\sql_condition(new \adapt\sql('c.contact_id'), '=', new \adapt\sql('ce.contact_id')));
                 
                 /* Do we have a date_deleted field? */
                 if (!is_null($this->data_source->get_field_structure('user', 'date_deleted'))){
                     
-                    $name_condition = new \frameworks\adapt\sql_condition(new \frameworks\adapt\sql('ce.email'), '=', $email_address);
-                    $date_deleted_condition = new \frameworks\adapt\sql_condition(new\frameworks\adapt\sql('u.date_deleted'), 'is', new \frameworks\adapt\sql('null'));
+                    $name_condition = new \adapt\sql_condition(new \adapt\sql('ce.email'), '=', $email_address);
+                    $date_deleted_condition = new \adapt\sql_condition(new \adapt\sql('u.date_deleted'), 'is', new \adapt\sql('null'));
                     
-                    $sql->where(new \frameworks\adapt\sql_and($name_condition, $date_deleted_condition));
+                    $sql->where(new \adapt\sql_and($name_condition, $date_deleted_condition));
                     
                 }else{
                     
-                    $sql->where(new \frameworks\adapt\sql_condition(new \frameworks\adapt\sql('ce.email'), '=', $email_address));
+                    $sql->where(new \adapt\sql_condition(new \adapt\sql('ce.email'), '=', $email_address));
                 }
                 
                 /* Get the results */

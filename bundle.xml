@@ -2,12 +2,97 @@
 <adapt_framework>
     <bundle>
         <name>users</name>
-        <label>Users</label>
+        <label>Adapt Users</label>
         <label>Foundation bundle for basic user management</label>
         <version>1.0.0</version>
         <type>extension</type>
+        <namespace>\adapt\users</namespace>
         <description>Provides the base models for building user centric apps</description>
         <copyright>2015 Adapt Framework</copyright>
+        <schema>
+            <add>
+                <table name="user">
+                    <field name="user_id" key="primary" auto-increment="Yes">
+                        <data_type>bigint</data_type>
+                        <label>User #</label>
+                    </field>
+                    <field name="status">
+                        <data_type>enum('Active', 'Suspended')</data_type>
+                        <default_value>Active</default_value>
+                        <label>Status</label>
+                    </field>
+                    <field name="contact_id" key="foreign" referenced-table-name="contact" referenced-field-name="contact_id">
+                        <data_type>bigint</data_type>
+                        <label>Contact #</label>
+                    </field>
+                    <field name="username" index="Yes" index-size="64">
+                        <data_type>varchar</data_type>
+                        <max_length>128</max_length>
+                        <nullable>No</nullable>
+                        <label>Username</label>
+                    </field>
+                    <field name="password">
+                        <data_type>varchar</data_type>
+                        <max_length>256</max_length>
+                        <label>Password</label>
+                    </field>
+                    <field name="password_change_required">
+                        <data_type>enum('Yes', 'No')</data_type>
+                        <default_value>No</default_value>
+                        <label>Must change password</label>
+                    </field>
+                </table>
+                <table name="user_setting">
+                    <field name="user_setting_id" key="primary" auto-increment="Yes">
+                        <data_type>bigint</data_type>
+                        <label>User setting #</label>
+                    </field>
+                    <field name="user_id" key="foreign" referenced-table-name="user" referenced-field-name="user_id">
+                        <data_type>bigint</data_type>
+                        <label>User #</label>
+                    </field>
+                    <field name="name" index="Yes" index-size="32">
+                        <data_type>varchar</data_type>
+                        <max_length>64</max_length>
+                        <nullable>no</nullable>
+                        <label>Key</label>
+                    </field>
+                    <field name="value">
+                        <data_type>text</data_type>
+                        <label>Value</label>
+                    </field>
+                </table>
+                <table name="user_login_token">
+                    <field name="user_login_token_id" key="primary" auto-increment="Yes">
+                        <data_type>bigint</data_type>
+                        <label>Token #</label>
+                    </field>
+                    <field name="user_id" key="foreign" referenced-table-name="user" referenced-field-name="user_id">
+                        <data_type>bigint</data_type>
+                        <label>User #</label>
+                    </field>
+                    <field name="token" index="Yes" index-size="32">
+                        <data_type>varchar</data_type>
+                        <max_length>64</max_length>
+                        <nullable>no</nullable>
+                        <label>Token</label>
+                    </field>
+                    <field name="token_type">
+                        <data_type>enum('Keep me signed in', 'Auto login', 'Password reset')</data_type>
+                        <default_value>Auto login</default_value>
+                        <nullable>no</nullable>
+                        <label>Type</label>
+                    </field>
+                    <field name="access_count">
+                        <data_type>int</data_type>
+                        <default_value>0</default_value>
+                        <nullable>no</nullable>
+                        <label>Access count</label>
+                        <description>The number of times this token has been used.</description>
+                    </field>
+                </table>
+            </add>
+        </schema>
         <settings>
             <category name="Users">
                 <setting>
@@ -41,11 +126,30 @@
             </category>
         </settings>
         <depends_on>
-            <bundle>contacts</bundle>
-            <bundle>sessions</bundle>
-            <bundle>bootstrap_views</bundle>
-            <bundle>form_password_confirm</bundle>
-            <bundle>email</bundle>
+            <bundle>
+                <name>contacts</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>sessions</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>bootstrap_views</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>form_password_confirm</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>email</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>adapt</name>
+                <version>1.0</version>
+            </bundle>
         </depends_on>
     </bundle>
 </adapt_framework>

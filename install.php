@@ -60,7 +60,55 @@ $sql->create_table('user_login_token')
  * to be user prompted by adapt_setup
  */
 
- /* Field types */
+ 
+/*
+ * Add email templates
+ */
+
+/* User registration */
+$email = new model_email();
+$email->name = 'user.registration';
+$email->subject("Welcome to the site")
+->message(
+    'text/html',
+    new html_html(
+        new html_body(
+            new html_p("Thanks for registering")
+        )
+    )
+)
+->message(
+    'text/plain',
+    "Thanks for registering"
+);
+$adapt->email_account->save_to_templates($email);
+
+/* Reset password */
+$email = new model_email();
+$email->name = 'user.password_reset';
+$email->subject("Reset your password")
+->message(
+    'text/html',
+    new html_html(
+        new html_body(
+            new html_p(
+                array(
+                    "Reset your password by following this ",
+                    new html_a("link", array('href' => '{{password_reset_url}}'))
+                )
+            )
+        )
+    )
+)
+->message(
+    'text/plain',
+    "Reset your password by copying and pasting the following link into your web browser {{password_reset_url}}"
+);
+$adapt->email_account->save_to_templates($email);
+
+ 
+
+/* Field types */
 $hidden = new model_form_field_type();
 $hidden->load_by_name('Hidden');
 $hidden = $hidden->form_field_type_id;
@@ -394,8 +442,13 @@ $button->action = 'Next page';
 $button->priority = 1;
 $button->save();
 
+
+$layout = new model_form_page_section_layout();
+$layout->load_by_name('standard');
+
 $section = new model_form_page_section();
 $section->form_page_id = $page->form_page_id;
+$section->form_page_section_layout_id = $layout->form_page_section_layout_id;
 $section->bundle_name = 'users';
 $section->priority = 1;
 $section->repeatable = 'No';
@@ -403,53 +456,66 @@ $section->save();
 
 
 
-/* Fields */
-$field = new model_form_page_section_field();
-$field->form_page_section_id = $section->form_page_section_id;
+$simple_group = new model_form_page_section_group_layout();
+$simple_group->load_by_name('simple');
+
+$group = new model_form_page_section_group();
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $layout->form_page_section_group_layout_id;
+$group->bundle_name = 'users';
+$group->priority = 1;
+$group->save();
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
 $field->bundle_name = 'users';
 $field->priority = 1;
-$field->form_field_type_id = $hidden;
+$field->form_field_type_id  = $hidden;
 $field->name = 'redirect_url';
 $field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
 $field->save();
 
-$field = new model_form_page_section_field();
-$field->form_page_section_id = $section->form_page_section_id;
+$group = new model_form_page_section_group();
+$group->bundle_name = 'users';
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $simple_group->form_page_section_group_layout_id;
+$group->priority = 2;
+$group->save();
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
 $field->bundle_name = 'users';
-$field->priority = 2;
-$field->form_field_type_id = $text;
+$field->priority = 1;
+$field->form_field_type_id= $text;
 $field->name = 'username';
-$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
 $field->label = 'Username';
-$field->placeholder_label = 'username';
-$field->max_length = 64;
+$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
+$field->placeholder_label = 'Username...';
+$field->max_length = 256;
 $field->mandatory = 'Yes';
 $field->save();
 
-$field = new model_form_page_section_field();
-$field->form_page_section_id = $section->form_page_section_id;
+
+$group = new model_form_page_section_group();
+$group->bundle_name = 'users';
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $simple_group->form_page_section_group_layout_id;
+$group->priority = 3;
+$group->save();
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
 $field->bundle_name = 'users';
-$field->priority = 3;
-$field->form_field_type_id = $password;
+$field->priority = 1;
+$type = new model_form_field_type();
+$type->load_by_name('Password confirmation with indicator');
+$field->form_field_type_id = $type->form_field_type_id;
 $field->name = 'password';
-$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
 $field->label = 'Password';
+$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
 $field->max_length = 64;
 $field->mandatory = 'Yes';
 $field->save();
-
-$field = new model_form_page_section_field();
-$field->form_page_section_id = $section->form_page_section_id;
-$field->bundle_name = 'users';
-$field->priority = 3;
-$field->form_field_type_id = $password;
-$field->name = 'password_repeat';
-$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
-$field->label = 'Repeat password';
-$field->max_length = 64;
-$field->mandatory = 'Yes';
-$field->save();$field->save();
-
 
 /*
  * Add pre-registration form (email)
@@ -499,10 +565,26 @@ $simple_group = new model_form_page_section_group_layout();
 $simple_group->load_by_name('simple');
 
 $group = new model_form_page_section_group();
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $layout->form_page_section_group_layout_id;
+$group->bundle_name = 'users';
+$group->priority = 1;
+$group->save();
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
+$field->bundle_name = 'users';
+$field->priority = 1;
+$field->form_field_type_id = $hidden;
+$field->name = 'redirect_url';
+$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
+$field->save();
+
+$group = new model_form_page_section_group();
 $group->bundle_name = 'users';
 $group->form_page_section_id = $section->form_page_section_id;
 $group->form_page_section_group_layout_id = $simple_group->form_page_section_group_layout_id;
-$group->priority = 1;
+$group->priority = 2;
 $group->save();
 
 $field = new model_form_page_section_group_field();
@@ -522,7 +604,7 @@ $group = new model_form_page_section_group();
 $group->bundle_name = 'users';
 $group->form_page_section_id = $section->form_page_section_id;
 $group->form_page_section_group_layout_id = $simple_group->form_page_section_group_layout_id;
-$group->priority = 2;
+$group->priority = 3;
 $group->save();
 
 $field = new model_form_page_section_group_field();
@@ -570,8 +652,12 @@ $button->action = 'Next page';
 $button->priority = 1;
 $button->save();
 
+$layout = new model_form_page_section_layout();
+$layout->load_by_name('standard');
+
 $section = new model_form_page_section();
 $section->form_page_id = $page->form_page_id;
+$section->form_page_section_layout_id = $layout->form_page_section_layout_id;
 $section->bundle_name = 'users';
 $section->priority = 1;
 $section->repeatable = 'No';
@@ -579,17 +665,27 @@ $section->save();
 
 
 
-/* Fields */
-$field = new model_form_page_section_field();
-$field->form_page_section_id = $section->form_page_section_id;
+$simple_group = new model_form_page_section_group_layout();
+$simple_group->load_by_name('simple');
+
+$group = new model_form_page_section_group();
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $layout->form_page_section_group_layout_id;
+$group->bundle_name = 'users';
+$group->priority = 1;
+$group->save();
+
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
 $field->bundle_name = 'users';
 $field->priority = 1;
-$field->form_field_type_id = $text;
+$field->form_field_type_id= $text;
 $field->name = 'username';
-$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
 $field->label = 'Username';
-$field->placeholder_label = 'username';
-$field->max_length = 64;
+$field->data_type_id = $adapt->data_source->get_data_type_id('varchar');
+$field->placeholder_label = 'Username...';
+$field->max_length = 256;
 $field->mandatory = 'Yes';
 $field->save();
 
@@ -632,8 +728,12 @@ $button->action = 'Next page';
 $button->priority = 1;
 $button->save();
 
+$layout = new model_form_page_section_layout();
+$layout->load_by_name('standard');
+
 $section = new model_form_page_section();
 $section->form_page_id = $page->form_page_id;
+$section->form_page_section_layout_id = $layout->form_page_section_layout_id;
 $section->bundle_name = 'users';
 $section->priority = 1;
 $section->repeatable = 'No';
@@ -641,17 +741,23 @@ $section->save();
 
 
 
-/* Fields */
-$field = new model_form_page_section_field();
-$field->form_page_section_id = $section->form_page_section_id;
+$group = new model_form_page_section_group();
+$group->bundle_name = 'users';
+$group->form_page_section_id = $section->form_page_section_id;
+$group->form_page_section_group_layout_id = $simple_group->form_page_section_group_layout_id;
+$group->priority = 1;
+$group->save();
+
+$field = new model_form_page_section_group_field();
+$field->form_page_section_group_id = $group->form_page_section_group_id;
 $field->bundle_name = 'users';
 $field->priority = 1;
-$field->form_field_type_id = $text;
+$type = new model_form_field_type();
+$type->load_by_name('Text');
+$field->form_field_type_id = $type->form_field_type_id;
 $field->name = 'email';
-$field->data_type_id = $adapt->data_source->get_data_type_id('email_address');
 $field->label = 'Email';
-$field->placeholder_label = 'someone@example.com';
-$field->max_length = 256;
+$field->data_type_id = $adapt->data_source->get_data_type_id('email_address');
 $field->mandatory = 'Yes';
 $field->save();
 
@@ -866,7 +972,7 @@ if ($account->is_loaded){
         $body->add(new html_p("Hi {{contact-forename}}"));
         $body->add(new html_p("Thanks for registering."));
         
-        $email->message('text/html', $message);
+        $email->message('text/html', $message->render());
         
         $email->save();
         

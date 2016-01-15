@@ -1,11 +1,11 @@
 <?php
 
-namespace extensions\users{
+namespace adapt\users{
     
     /* Prevent direct access */
     defined('ADAPT_STARTED') or die;
     
-    class model extends \frameworks\adapt\model{
+    class model extends \adapt\model{
         
     }
     

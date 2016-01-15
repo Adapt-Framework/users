@@ -1,6 +1,6 @@
 <?php
 
-namespace extensions\users{
+namespace adapt\users{
 
     /* Prevent Direct Access */
     defined('ADAPT_STARTED') or die;
@@ -15,7 +15,7 @@ namespace extensions\users{
             
             $form_view = null;
             $form_title = null;
-            $form = new \extensions\forms\model_form();
+            $form = new \adapt\forms\model_form();
             
             $data = array();
             
@@ -29,7 +29,7 @@ namespace extensions\users{
                 
                 
                 $form_view = $form->get_view($data);
-                if ($form_view instanceof \frameworks\adapt\html){
+                if ($form_view instanceof \adapt\html){
                     $form_title = $form_view->find('h1')->detach();
                     //if ($form_title && $form_title instanceof \frameworks\adapt\html){
                         $form_title = $form_title->get(0);
@@ -37,19 +37,19 @@ namespace extensions\users{
                 }
             }
             
-            $row = new \extensions\bootstrap_views\view_row();
+            $row = new \bootstrap\views\view_row();
             
             if ($this->setting('users.allow_registrations') == 'Yes'){
-                $left_col = new \extensions\bootstrap_views\view_cell(new html_h3('Sign in'), 12, 12, 6, 6);
-                $right_col = new \extensions\bootstrap_views\view_cell(new html_h3('Join now'), 12, 12, 6, 6);
+                $left_col = new \bootstrap\views\view_cell(new html_h3('Sign in'), 12, 12, 6, 6);
+                $right_col = new \bootstrap\views\view_cell(new html_h3('Join now'), 12, 12, 6, 6);
                 $left_col->add($form_view);
                 
                 $name = "join_email";
                 if ($style == self::USERNAME) $name = "join_username";
-                $join_form = new \extensions\forms\model_form();
+                $join_form = new \adapt\forms\model_form();
                 if ($form->load_by_name($name)){
                     $join_view = $form->get_view($data);
-                    if ($join_view instanceof \frameworks\adapt\html){
+                    if ($join_view instanceof \adapt\html){
                         $join_view->find('h1')->detach();
                     }
                     $right_col->add($join_view);
@@ -57,11 +57,11 @@ namespace extensions\users{
                 
                 $row->add(array($left_col, $right_col));
             }else{
-                $left_col = new \extensions\bootstrap_views\view_cell($form_view, 12, 12, 12, 12);
+                $left_col = new \bootstrap\views\view_cell($form_view, 12, 12, 12, 12);
                 $row->add(array($left_col));
             }
             
-            $panel = new \extensions\bootstrap_views\view_panel($row);
+            $panel = new \bootstrap\views\view_panel($row);
             $this->add($panel);
             
             if ($form_title) $panel->title = $form_title;
