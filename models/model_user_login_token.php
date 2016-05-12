@@ -17,9 +17,14 @@ namespace adapt\users{
             if (isset($token)){
                 $sql = $this->data_source->sql;
                 
-                $sql->select(new \adapt\sql('*'))
+                $sql->select('*')
                     ->from($this->table_name)
-                    ->where(new \adapt\sql_condition(new \adapt\sql('token'), '=', $token));
+                    ->where(
+                        new sql_and(
+                            new sql_cond('token', sql::EQUALS, sql::q($token)),
+                            new sql_cond('date_deleted', sql::IS, new sql_null())
+                        )
+                    );
                 
                 /* Get the results */
                 $results = $sql->execute()->results();
@@ -36,7 +41,20 @@ namespace adapt\users{
                                 $this->delete();
                                 $this->error("The login token '{$token}' has expired.");
                             }else{
-                                
+                                return true;
+                            }
+                        }elseif($this->token_type == "Password reset"){
+                            if ($this->access_count > 1){
+                                $this->delete();
+                                $this->error("The login token '{$token}' has expired, password reset tokens can be used only once.");
+                            }else{
+                                return true;
+                            }
+                        }elseif($this->token_type == "Email verification"){
+                            if ($this->access_count > 1){
+                                $this->delete();
+                                $this->error("The login token '{$token}' has expired, email verification tokens can be used only once.");
+                            }else{
                                 return true;
                             }
                         }else{

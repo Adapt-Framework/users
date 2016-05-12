@@ -32,20 +32,30 @@ namespace adapt\users{
         }
         
         public function mset_password($value){
-            $this->_data['password'] = self::hash_password($value, $this->is_loaded ? md5($this->user_id) : "");
+            $value = self::hash_password($value);
+            $this->_changed_fields['password'] = array(
+                'old_value' => $this->password,
+                'new_value' => $value
+            );
+            $this->_data['password'] = $value;
+            $this->_has_changed = true;
+            //print new html_pre(print_r($this->_data, true));
+            //exit(1);
             $this->password_change_required = 'No';
             return true;
         }
         
+        //public function mget_password(){
+        //    return "";
+        //}
+        
         public function pget_contact(){
             $children = $this->get();
-            
             foreach($children as $child){
                 if ($child instanceof \adapt\model && $child->table_name == 'contact'){
                     return $child;
                 }
             }
-            
             return null;
         }
         
@@ -61,21 +71,15 @@ namespace adapt\users{
                 if (in_array('username', $fields)){
                     $sql = $this->data_source->sql;
                     
-                    $sql->select(new \adapt\sql('*'))
-                        ->from($this->table_name);
+                    $sql->select('*')
+                        ->from($this->table_name)
+                        ->where(
+                            new sql_and(
+                                new sql_cond('username', sql::EQUALS, sql::q($username)),
+                                new sql_cond('date_deleted', sql::IS, new sql_null())
+                            )
+                        );
                     
-                    /* Do we have a date_deleted field? */
-                    if (in_array('date_deleted', $fields)){
-                        
-                        $name_condition = new \adapt\sql_condition(new \adapt\sql('username'), '=', $username);
-                        $date_deleted_condition = new \adapt\sql_condition(new \adapt\sql('date_deleted'), 'is', new \adapt\sql('null'));
-                        
-                        $sql->where(new \adapt\sql_and($name_condition, $date_deleted_condition));
-                        
-                    }else{
-                        
-                        $sql->where(new \adapt\sql_condition(new \adapt\sql('username'), '=', $username));
-                    }
                     
                     /* Get the results */
                     $results = $sql->execute()->results();
@@ -123,23 +127,16 @@ namespace adapt\users{
                 
                 $sql = $this->data_source->sql;
                 
-                $sql->select(new \adapt\sql('*'))
+                $sql->select('u.*')
                     ->from($this->table_name, 'u')
-                    ->join('contact', 'c', new \adapt\sql_condition(new \adapt\sql('u.contact_id'), '=', new \adapt\sql('c.contact_id')))
-                    ->join('contact_email', 'ce', new \adapt\sql_condition(new \adapt\sql('c.contact_id'), '=', new \adapt\sql('ce.contact_id')));
-                
-                /* Do we have a date_deleted field? */
-                if (!is_null($this->data_source->get_field_structure('user', 'date_deleted'))){
-                    
-                    $name_condition = new \adapt\sql_condition(new \adapt\sql('ce.email'), '=', $email_address);
-                    $date_deleted_condition = new \adapt\sql_condition(new \adapt\sql('u.date_deleted'), 'is', new \adapt\sql('null'));
-                    
-                    $sql->where(new \adapt\sql_and($name_condition, $date_deleted_condition));
-                    
-                }else{
-                    
-                    $sql->where(new \adapt\sql_condition(new \adapt\sql('ce.email'), '=', $email_address));
-                }
+                    ->join('contact', 'c', new sql_cond('u.contact_id', sql::EQUALS, 'c.contact_id'))
+                    ->join('contact_email', 'ce', new sql_cond('c.contact_id', sql::EQUALS, 'ce.contact_id'))
+                    ->where(
+                        new sql_and(
+                            new sql_cond('ce.email', sql::EQUALS, sql::q($email_address)),
+                            new sql_cond('u.date_deleted', sql::IS, new sql_null())
+                        )
+                    );
                 
                 /* Get the results */
                 $results = $sql->execute()->results();
@@ -164,9 +161,12 @@ namespace adapt\users{
         public function load_by_email_address_password($email_address, $password){
             if ($this->load_by_email_address($email_address)){
                 list($salt, $pass) = explode(":", $this->password);
+                //print new html_pre("Current password: {$this->password}\nSalt: {$salt}\nPassword: {$pass}");
                 
                 $password = self::hash_password($password, $salt);
                 
+                //print new html_pre("Current password: {$this->password}\nSalt: {$salt}\nPassword: {$pass}\nEncoded password: {$password}");
+                //exit(1);
                 if ($password == $this->password){
                     $this->trigger(self::EVENT_ON_LOAD_BY_EMAIL_ADDRESS_PASSWORD);
                     return true;
@@ -182,7 +182,7 @@ namespace adapt\users{
             
             if (is_null($value)){
                 foreach($children as $child){
-                    if ($child instanceof model && $child->table_name == 'user_setting'){
+                    if ($child instanceof \adapt\model && $child->table_name == 'user_setting'){
                         if ($child->name == $key){
                             return $child->value;
                         }
@@ -191,7 +191,7 @@ namespace adapt\users{
                 
             }else{
                 foreach($children as $child){
-                    if ($child instanceof model && $child->table_name == 'user_setting'){
+                    if ($child instanceof \adapt\model && $child->table_name == 'user_setting'){
                         if ($child->name == $key){
                             $child->value = $value;
                             return null;
