@@ -105,11 +105,8 @@ namespace adapt\users{
         
         public function load_by_username_password($username, $password){
             if ($this->load_by_username($username)){
-                list($salt, $pass) = explode(":", $this->password);
                 
-                $password = self::hash_password($password, $salt);
-                
-                if ($password == $this->password){
+                if (password_verify($password, $this->password)){
                     $this->trigger(self::EVENT_ON_LOAD_BY_USERNAME_PASSWORD);
                     return true;
                 }
@@ -160,14 +157,8 @@ namespace adapt\users{
         
         public function load_by_email_address_password($email_address, $password){
             if ($this->load_by_email_address($email_address)){
-                list($salt, $pass) = explode(":", $this->password);
-                //print new html_pre("Current password: {$this->password}\nSalt: {$salt}\nPassword: {$pass}");
                 
-                $password = self::hash_password($password, $salt);
-                
-                //print new html_pre("Current password: {$this->password}\nSalt: {$salt}\nPassword: {$pass}\nEncoded password: {$password}");
-                //exit(1);
-                if ($password == $this->password){
+                if (password_verify($password, $this->password)){
                     $this->trigger(self::EVENT_ON_LOAD_BY_EMAIL_ADDRESS_PASSWORD);
                     return true;
                 }
@@ -209,22 +200,10 @@ namespace adapt\users{
             return null;
         }
         
-        public static function hash_password($password, $salt = ""){
-            $adapt = $GLOBALS['adapt'];
-            $salt_chars = "abcdefghijklmnopqrstuvwzyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            $salt_length = $adapt->setting('users.salt_length');
+        public static function hash_password($password, $salt = ''){
             
-            if (!is_int($salt_length) || $salt_length <= 0) $salt_length = 30;
-            
-            if ($salt == ""){
-                for($i = 0; $i < $salt_length; $i++){
-                    $salt .= substr($salt_chars, rand(0, strlen($salt_chars) - 1), 1);
-                }
-            }
-            
-            //$salt = sha1($salt);
-            $password = $salt . ":" . crypt($password, $salt);
-            
+            $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
+
             return $password;
         }
     }
