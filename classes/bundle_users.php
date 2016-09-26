@@ -614,9 +614,7 @@ namespace adapt\users{
         }
         
         public function process_users_tag($bundle, $tag_data){
-            print "<pre>process_users_tag</pre>";
             if ($bundle instanceof \adapt\bundle && $tag_data instanceof \adapt\xml){
-                print "<pre>Is bundle, is xml</pre>";
                 $this->register_install_handler($this->name, $bundle->name, 'install_users');
                 
                 $user_nodes = $tag_data->get();
@@ -628,7 +626,6 @@ namespace adapt\users{
                         $user = [];
                         foreach($child_nodes as $child_node){
                             if ($child_node instanceof \adapt\xml){
-                                print "<pre>TAG: {$child_node->tag}</pre>";
                                 switch($child_node->tag){
                                 case "username":
                                 case "password":
