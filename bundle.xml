@@ -23,6 +23,10 @@
                         <data_type>bigint</data_type>
                         <label>User #</label>
                     </field>
+                    <field name="guid" index="Yes" index-size="36">
+                        <label>GUID</label>
+                        <data_type>guid</data_type>
+                    </field>
                     <field name="status">
                         <data_type>enum('Active', 'Suspended')</data_type>
                         <default_value>Active</default_value>
