@@ -7,8 +7,14 @@ namespace adapt\users{
     
     class bundle_users extends \adapt\bundle{
         
+        protected $_users;
+        
         public function __construct($data){
             parent::__construct('users', $data);
+            
+            $this->_users = [];
+            
+            $this->register_config_handler('users', 'users', 'process_users_tag');
         }
         
         public function boot(){
@@ -605,6 +611,123 @@ namespace adapt\users{
             }
             
             return false;
+        }
+        
+        public function process_users_tag($bundle, $tag_data){
+            print "<pre>process_users_tag</pre>";
+            if ($bundle instanceof \adapt\bundle && $tag_data instanceof \adapt\xml){
+                print "<pre>Is bundle, is xml</pre>";
+                $this->register_install_handler($this->name, $bundle->name, 'install_users');
+                
+                $user_nodes = $tag_data->get();
+                $this->_users[$bundle->name] = [];
+                
+                foreach($user_nodes as $user_node){
+                    if ($user_node instanceof \adapt\xml && $user_node->tag == 'user'){
+                        $child_nodes = $user_node->get();
+                        $user = [];
+                        foreach($child_nodes as $child_node){
+                            if ($child_node instanceof \adapt\xml){
+                                print "<pre>TAG: {$child_node->tag}</pre>";
+                                switch($child_node->tag){
+                                case "username":
+                                case "password":
+                                case "password_change_required":
+                                    $user[$child_node->tag] = $child_node->get(0);
+                                    break;
+                                case "contact":
+                                    $contact_nodes = $child_node->get();
+                                    $contact = [];
+                                    foreach($contact_nodes as $contact_node){
+                                        if ($contact_node instanceof \adapt\xml){
+                                            switch($contact_node->tag){
+                                            case "country":
+                                            case "title":
+                                            case "forename":
+                                            case "middle_names":
+                                            case "surname":
+                                            case "nickname":
+                                            case "date_of_birth":
+                                                $contact[$contact_node->tag] = $contact_node->get(0);
+                                                break;
+                                            case "contact_email":
+                                                $contact_email_nodes = $contact_node->get();
+                                                $contact_email = [];
+                                                foreach($contact_email_nodes as $contact_email_node){
+                                                    if ($contact_email_node instanceof \adapt\xml){
+                                                        switch($contact_email_node->tag){
+                                                        case "type":
+                                                        case "priority":
+                                                        case "email":
+                                                        case "email_verified":
+                                                            $contact_email[$contact_email_node->tag] = $contact_email_node->get(0);
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                if (!is_array($contact['contact_email'])) $contact['contact_email'] = [];
+                                                $contact['contact_email'][] = $contact_email;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    $user['contact'] = $contact;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!is_array($this->_users[$bundle->name])) $this->_users[$bundle_name] = [];
+                        $this->_users[$bundle->name][] = $user;
+                    }
+                }
+            }
+        }
+        
+        public function install_users($bundle){
+            if ($bundle instanceof \adapt\bundle){
+                if (is_array($this->_users[$bundle->name])){
+                    foreach($this->_users[$bundle->name] as $user){
+                        print new html_pre(print_r($user, true));
+                        $u = new model_user();
+                        $u->username = $user['username'];
+                        $u->password = $user['password'];
+                        $u->password_change_required = $user['password_change_required'];
+                        
+                        if (is_array($user['contact'])){
+                            $c = new model_contact();
+                            $country = new model_country();
+                            if ($country->load_by_name($user['contact']['country'])){
+                                $c->country_id = $country->country_id;
+                            }
+                            $c->title = $user['contact']['title'];
+                            $c->forename = $user['contact']['forename'];
+                            $c->middle_names = $user['contact']['middle_names'];
+                            $c->surname = $user['contact']['surname'];
+                            $c->nickname = $user['contact']['nickname'];
+                            $c->date_of_birth = $user['contact']['date_of_birth'];
+                            $c->save();
+                            
+                            if (is_array($user['contact']['contact_email'])){
+                                foreach($user['contact']['contact_email'] as $contact_email){
+                                    $contact_email_type = new model_contact_email_type();
+                                    if ($contact_email_type->load_by_name($contact_email['type'])){
+                                        $ce = new model_contact_email();
+                                        $ce->contact_id = $c->contact_id;
+                                        $ce->contact_email_type_id = $contact_email_type->contact_email_type_id;
+                                        $ce->priority = $contact_email['priority'];
+                                        $ce->email = $contact_email['email'];
+                                        $ce->email_address_verified = $contact_email['email_verified'];
+                                        $ce->save();
+                                    }
+                                }
+                            }
+                            $u->contact_id = $c->contact_id;
+                        }
+                        
+                        $u->save();
+                    }
+                }
+            }
         }
         
     }
