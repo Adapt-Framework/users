@@ -670,6 +670,8 @@ namespace adapt\users{
                                     }
                                     $user['contact'] = $contact;
                                     break;
+                                default:
+                                    $user[$child_node->tag] = $child_node->get(0);
                                 }
                             }
                         }
@@ -686,9 +688,12 @@ namespace adapt\users{
                     foreach($this->_users[$bundle->name] as $user){
                         print new html_pre(print_r($user, true));
                         $u = new model_user();
-                        $u->username = $user['username'];
-                        $u->password = $user['password'];
-                        $u->password_change_required = $user['password_change_required'];
+                        
+                        foreach($user as $key => $value){
+                            if ($key != "contact"){
+                                $u->$key = $value;
+                            }
+                        }
                         
                         if (is_array($user['contact'])){
                             $c = new model_contact();
@@ -720,7 +725,6 @@ namespace adapt\users{
                             }
                             $u->contact_id = $c->contact_id;
                         }
-                        
                         $u->save();
                     }
                 }
