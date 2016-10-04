@@ -77,7 +77,7 @@ namespace adapt\users{
         
         public function save(){
             if (!$this->is_loaded){
-                $chars = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@£$%^&*()_-+={}[]:;|";
+                $chars = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#Â£$%^&*()_-+={}[]:;|";
                 
                 $token = date("Ymdhis");
                 for($i = 0; $i < 64; $i++){
