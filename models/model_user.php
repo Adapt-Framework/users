@@ -39,8 +39,7 @@ namespace adapt\users{
             );
             $this->_data['password'] = $value;
             $this->_has_changed = true;
-            //print new html_pre(print_r($this->_data, true));
-            //exit(1);
+            
             $this->password_change_required = 'No';
             return true;
         }
@@ -200,7 +199,7 @@ namespace adapt\users{
             return null;
         }
         
-        public static function hash_password($password, $salt = ''){
+        public static function hash_password($password, $salt = ''){ // $salt is now depricated and should be removed
             
             $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
 

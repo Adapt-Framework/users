@@ -686,7 +686,6 @@ namespace adapt\users{
             if ($bundle instanceof \adapt\bundle){
                 if (is_array($this->_users[$bundle->name])){
                     foreach($this->_users[$bundle->name] as $user){
-                        print new html_pre(print_r($user, true));
                         $u = new model_user();
                         
                         foreach($user as $key => $value){
