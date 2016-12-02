@@ -195,7 +195,7 @@
                             <field type="Password confirmation with strength indicator" name="password" data-type="varchar" label="Password" max-length="64" mandatory="Yes" />
                         </group>
                     </section>
-                    <button style="Primary" action="Next page" label="Join now" />
+                    <button style="Primary" action="Next page" label="Join Now" />
                 </page>
             </form>
             <form name="reset_password_email" submission-url="/password-reminder-sent" actions="request-password-reset" method="post" title="Reset your password" show-steps="No" show-processing-page="Yes">
@@ -205,33 +205,33 @@
                             <field type="Text" name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
                         </group>
                     </section>
-                    <button style="Primary" action="Next page" label="Reset my password" />
+                    <button style="Primary" action="Next page" label="Reset My Password" />
                 </page>
             </form>
-            <form name="new_password" submission-url="/password-changed" actions="set-new-password" method="post" title="Choose a new password" show-steps="No" show-processing-page="Yes">
+            <form name="new_password" submission-url="/password-changed" actions="set-new-password" method="post" title="Choose a New Password" show-steps="No" show-processing-page="Yes">
                 <page description="Please choose a new password">
                     <section layout="standard" repeatable="No">
                         <group layout="simple">
                             <field type="Hidden" name="token" data-type="varchar" max-length="64" />
                         </group>
                         <group layout="simple">
-                            <field type="Password confirmation with strength indicator" name="new_password" data-type="varchar" label="New password" max-length="64" mandatory="Yes" />
+                            <field type="Password confirmation with strength indicator" name="new_password" data-type="varchar" label="New Password" max-length="64" mandatory="Yes" />
                         </group>
                     </section>
-                    <button style="Primary" action="Next page" label="Reset password" />
+                    <button style="Primary" action="Next page" label="Reset Password" />
                 </page>
             </form>
-            <form name="change_password" submission-url="/password-changed" actions="change-password" method="post" title="Change your password" show-steps="No" show-processing-page="Yes">
+            <form name="change_password" submission-url="/password-changed" actions="change-password" method="post" title="Change Your Password" show-steps="No" show-processing-page="Yes">
                 <page description="Please enter your current password before choosing a new one.">
                     <section layout="standard" repeatable="No">
                         <group layout="simple">
-                            <field type="Password" name="current_password" data-type="varchar" label="Current password" max-length="64" mandatory="Yes" />
+                            <field type="Password" name="current_password" data-type="varchar" label="Current Password" max-length="64" mandatory="Yes" />
                         </group>
                         <group layout="simple">
-                            <field type="Password confirmation with strength indicator" name="new_password" data-type="varchar" label="New password" max-length="64" mandatory="Yes" />
+                            <field type="Password confirmation with strength indicator" name="new_password" data-type="varchar" label="New Password" max-length="64" mandatory="Yes" />
                         </group>
                     </section>
-                    <button style="Primary" action="Next page" label="Change password" />
+                    <button style="Primary" action="Next page" label="Change Password" />
                 </page>
             </form>
             <form name="verify_email" submission-url="/verify-email-sent" actions="send-email-verification" method="post" title="Verify your email address" show-steps="No" show-processing-page="Yes">
@@ -241,7 +241,7 @@
                             <field type="Text" name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
                         </group>
                     </section>
-                    <button style="Primary" action="Next page" label="Re-send verification" />
+                    <button style="Primary" action="Next page" label="Re-send Verification" />
                 </page>
             </form>
         </forms>
