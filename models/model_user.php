@@ -11,6 +11,10 @@ namespace adapt\users{
         const EVENT_ON_LOAD_BY_USERNAME_PASSWORD = 'model_user.on_load_by_username_password';
         const EVENT_ON_LOAD_BY_EMAIL_ADDRESS = 'model_user.on_load_by_email_address';
         const EVENT_ON_LOAD_BY_EMAIL_ADDRESS_PASSWORD = 'model_user.on_load_by_email_address_password';
+
+        // User statuses
+        const USER_ACTIVE = 'Active';
+        const USER_SUSPENDED = 'Suspended';
         
         public function __construct($id = null){
             parent::__construct('user', $id);
