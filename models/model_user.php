@@ -211,5 +211,3 @@ namespace adapt\users{
         }
     }
 }
-
-?>
