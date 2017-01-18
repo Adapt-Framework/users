@@ -203,6 +203,29 @@ namespace adapt\users{
             return null;
         }
         
+        public function get_settings(){
+            $output = [];
+            $children = $this->get();
+            
+            foreach($children as $child){
+                if ($child instanceof \adapt\model && $child->table_name == 'user_setting'){
+                    $output[$child->name] = $child->value;
+                }
+            }
+            
+            return $output;
+        }
+        
+        public function apply_settings(){
+            $settings = $this->get_settings();
+            
+            if (is_array($settings)){
+                foreach($settings as $key => $value){
+                    parent::setting($key, $value);
+                }
+            }
+        }
+        
         public static function hash_password($password, $salt = ''){ // $salt is now depricated and should be removed
             
             $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
