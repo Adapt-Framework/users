@@ -160,7 +160,6 @@ namespace adapt\users{
         
         public function load_by_email_address_password($email_address, $password){
             if ($this->load_by_email_address($email_address)){
-                
                 if (password_verify($password, $this->password)){
                     $this->trigger(self::EVENT_ON_LOAD_BY_EMAIL_ADDRESS_PASSWORD);
                     return true;

@@ -298,6 +298,7 @@ namespace adapt\users{
                                 $_this->session->user = $user;
                                 $_this->session->save();
                                 
+                                //TODO: Apply user settings
                                 
                                 /*
                                  * TODO:
@@ -365,6 +366,8 @@ namespace adapt\users{
                     $_this->cookie('login_token', '', 1);
                     $_this->session->user = new \adapt\users\model_user();
                     $_this->redirect("/");
+                    
+                    //TODO: Remove user settings
                 });
                 
                 /*
