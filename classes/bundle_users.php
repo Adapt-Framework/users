@@ -66,14 +66,17 @@ namespace adapt\users{
                         $_this->store('users.user', $user);
                         if ($user->is_loaded){
                             $_this->data('users.user.user_id', $user->user_id);
+                            // Apply user settings
                         }else{
                             $_this->remove_data('users.user.user_id');
+                            // Remove user settings
                         }
                         $_this->save();
                     }else{
                         $_this->remove_store('users.user');
                         $_this->remove_data('users.user.user_id');
                         $_this->save();
+                        // Remove user settings
                     }
                 });
                 
