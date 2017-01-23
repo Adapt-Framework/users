@@ -10,6 +10,33 @@
         <availability>public</availability>
         <description>Provides the base models for building user centric apps</description>
         <copyright>2016 Adapt Framework</copyright>
+        <language_strings>
+            <string language="en_gb" key="Sign in" value="Sign in" />
+            <string language="en_gb" key="Email" value="Email" />
+            <string language="en_gb" key="someone@example.com" value="someone@example.com" />
+            <string language="en_gb" key="Password" value="Password" />
+            <string language="en_gb" key="Keep me signed in" value="Keep me signed in" />
+            <string language="en_gb" key="Forgot your password?" value="Forgot your password?" />
+            <string language="en_gb" key="Sign In" value="Sign In" />
+            <string language="en_gb" key="Username" value="Username" />
+            <string language="en_gb" key="Choose a username..." value="Choose a username..." />
+            <string language="en_gb" key="Join" value="Join" />
+            <string language="en_gb" key="Reset your password" value="Reset your password" />
+            <string language="en_gb" key="Tell us your email address and we will send you a link to choose a new password." value="Tell us your email address and we will send you a link to choose a new password." />
+            <string language="en_gb" key="Choose a New Password" value="Choose a New Password" />
+            <string language="en_gb" key="Please choose a new password" value="Please choose a new password" />
+            <string language="en_gb" key="Reset My Password" value="Reset My Password" />
+            <string language="en_gb" key="Reset Password" value="Reset Password" />
+            <string language="en_gb" key="New Password" value="New Password" />
+            <string language="en_gb" key="Please enter your current password before choosing a new one." value="Please enter your current password before choosing a new one." />
+            <string language="en_gb" key="Change Your Password" value="Change Your Password" />
+            <string language="en_gb" key="" value="" />
+            <string language="en_gb" key="" value="" />
+            <string language="en_gb" key="" value="" />
+            <string language="en_gb" key="" value="" />
+            
+            
+        </language_strings>
         <schema>
             <add>
                 <table name="contact_email">
@@ -343,6 +370,14 @@
             </bundle>
             <bundle>
                 <name>scheduler</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>language</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>language_en_gb</name>
                 <version>1.0</version>
             </bundle>
         </depends_on>
