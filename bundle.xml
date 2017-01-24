@@ -30,12 +30,6 @@
             <string language="en_gb" key="New Password" value="New Password" />
             <string language="en_gb" key="Please enter your current password before choosing a new one." value="Please enter your current password before choosing a new one." />
             <string language="en_gb" key="Change Your Password" value="Change Your Password" />
-            <string language="en_gb" key="" value="" />
-            <string language="en_gb" key="" value="" />
-            <string language="en_gb" key="" value="" />
-            <string language="en_gb" key="" value="" />
-            
-            
         </language_strings>
         <schema>
             <add>
