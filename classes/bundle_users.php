@@ -583,6 +583,32 @@ namespace adapt\users{
                     }
                 });
                 
+                /**
+                 * Extend \adapt\base and add a language property
+                 */
+                \adapt\base::extend(
+                    'pget_language',
+                    function($_this){
+                        $language = $_this->store('language.model');
+                        if (!$language instanceof \adapt\model || $language->table_name != 'language'){
+                            $language = new model_language();
+                        }
+
+                        if ($_this->session->is_logged_in){
+                            if ($language->language_id != $_this->session->user->contact->language_id){
+                                $language->load($_this->session->user->contact->language_id);
+                            }
+                        }else{
+                            if ($_this->setting('language.default')){
+                                $language->load_by_name($_this->setting('language.default'));
+                            }
+                        }
+                        $_this->store('language.model', $language);
+
+                        return $language;
+                    }
+                );
+                
                 
                 if (!preg_match("/verify-email/", $this->request['url']) && $this->session->is_logged_in && $this->setting('users.verify_email_address') == "Yes"){
                     //TODO: Check the email address is verified and redirect to a page if not
@@ -615,6 +641,8 @@ namespace adapt\users{
                 
                 return true;
             }
+            
+            
             
             return false;
         }
