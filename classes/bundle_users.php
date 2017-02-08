@@ -609,6 +609,47 @@ namespace adapt\users{
                     }
                 );
                 
+                /**
+                 * Extend Adapt base and over-ride the country to be the users country.
+                 */
+                \adapt\base::extend(
+                    'pget_country',
+                    function($_this){
+                        $country = $_this->store('locales.country');
+                        if ($_this->session->is_logged_in){
+                            if ($country instanceof \adapt\model && $country->table_name == "country"){
+                                if ($country->country_id == $_this->session->user->contact->country_id){
+                                    return $country;
+                                }else{
+                                    $country = new model_country($_this->session->user->contact->country_id);
+                                    if ($country->is_loaded){
+                                        $_this->store('locales.country', $country);
+                                        return $country;
+                                    }
+                                }
+                            }else{
+                                $country = new model_country($_this->session->user->contact->country_id);
+                                if ($country->is_loaded){
+                                    $_this->store('locales.country', $country);
+                                    return $country;
+                                }
+                            }
+                        }
+                        
+                        if (!$country instanceof \adapt\model && $country->table_name != 'country'){
+                            $country = new model_country();
+                        }
+                        
+                        if ($country->name != $_this->setting('locales.default_country')){
+                            $country->load_by_name($_this->setting('locales.default_country'));
+                        }
+                        
+                        $_this->store('locales.country', $country);
+                        
+                        return $country;
+                    }
+                );
+                
                 
                 if (!preg_match("/verify-email/", $this->request['url']) && $this->session->is_logged_in && $this->setting('users.verify_email_address') == "Yes"){
                     //TODO: Check the email address is verified and redirect to a page if not
