@@ -10,6 +10,44 @@
         <availability>public</availability>
         <description>Provides the base models for building user centric apps</description>
         <copyright>2016 Adapt Framework</copyright>
+        <depends_on>
+            <bundle>
+                <name>contacts</name>
+                <version>0.5</version>
+            </bundle>
+            <bundle>
+                <name>sessions</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>bootstrap_views</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>form_password_confirm</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>email</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>adapt</name>
+                <version>2.0</version>
+            </bundle>
+            <bundle>
+                <name>scheduler</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>language</name>
+                <version>1.0</version>
+            </bundle>
+            <bundle>
+                <name>language_en_gb</name>
+                <version>1.0</version>
+            </bundle>
+        </depends_on>
         <language_strings>
             <string language="en_gb" key="Sign in" value="Sign in" />
             <string language="en_gb" key="Email" value="Email" />
@@ -337,43 +375,5 @@
                 </setting>
             </category>
         </settings>
-        <depends_on>
-            <bundle>
-                <name>contacts</name>
-                <version>1.0</version>
-            </bundle>
-            <bundle>
-                <name>sessions</name>
-                <version>1.0</version>
-            </bundle>
-            <bundle>
-                <name>bootstrap_views</name>
-                <version>1.0</version>
-            </bundle>
-            <bundle>
-                <name>form_password_confirm</name>
-                <version>1.0</version>
-            </bundle>
-            <bundle>
-                <name>email</name>
-                <version>1.0</version>
-            </bundle>
-            <bundle>
-                <name>adapt</name>
-                <version>2.0</version>
-            </bundle>
-            <bundle>
-                <name>scheduler</name>
-                <version>1.0</version>
-            </bundle>
-            <bundle>
-                <name>language</name>
-                <version>1.0</version>
-            </bundle>
-            <bundle>
-                <name>language_en_gb</name>
-                <version>1.0</version>
-            </bundle>
-        </depends_on>
     </bundle>
 </adapt_framework>
