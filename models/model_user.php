@@ -225,11 +225,79 @@ namespace adapt\users{
             }
         }
         
+        public function save(){
+            if (!$this->is_loaded){
+                /* Check if the username and/or email address is unique */
+                if (strtolower($this->setting('users.username_type')) == 'username'){
+                    if (!isset($this->username)){
+                        $this->error("Username required");
+                        return false;
+                    }
+                    
+                    if (static::has_username($this->username)){
+                        $this->error("Username has already been used.");
+                        return false;
+                    }
+                    
+                    if (isset($this->contact->email)){
+                        if (static::has_email_address($this->contact->email)){
+                            $this->error("This email address has already been registered.");
+                            return false;
+                        }
+                    }
+                }else{
+                    if (!isset($this->contact->email)){
+                        $this->error("Email is required");
+                        return false;
+                    }
+                    
+                    if (static::has_email_address($this->contact->email)){
+                        $this->error("This email address has already been registered.");
+                        return false;
+                    }
+                    
+                    if (isset($this->username)){
+                        if (static::has_username($this->username)){
+                            $this->error("Email has already been used.");
+                            return false;
+                        }
+                    }
+                }
+            }
+            
+            return parent::save();
+        }
+        
         public static function hash_password($password, $salt = ''){ // $salt is now depricated and should be removed
             
             $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
 
             return $password;
+        }
+        
+        public static function has_username($username){
+            $adapt = $GLOBALS['adapt'];
+            $sql = $adapt->data_source->sql;
+            $sql->select('username')
+                ->from('user')
+                ->where(
+                    new sql_and(
+                        /* Not checking date deleted to prevent spoofing */
+                        new sql_cond('username', sql::EQUALS, q($username))
+                    )
+                );
+            $results = $sql->execute()->results();
+            
+            if (is_array($results) && count($results)){
+                return false;
+            }
+            
+            return true;
+        }
+        
+        public static function has_email_address($email_address){
+            $user = new model_user();
+            return !$user->load_by_email_address($email_address);
         }
     }
 }
