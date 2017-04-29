@@ -246,7 +246,7 @@ namespace adapt\users{
                         }
                     }
                 }else{
-                    if (!isset($this->contact->email)){
+                    if (!$this->contact->email){
                         $this->error("Email is required");
                         return false;
                     }
