@@ -85,7 +85,7 @@ namespace adapt\users{
                     
                     
                     /* Get the results */
-                    $results = $sql->execute()->results();
+                    $results = $sql->execute(0)->results();
                     
                     if (count($results) == 1){
                         $this->trigger(self::EVENT_ON_LOAD_BY_USERNAME);
@@ -139,7 +139,7 @@ namespace adapt\users{
                     );
                 
                 /* Get the results */
-                $results = $sql->execute()->results();
+                $results = $sql->execute(0)->results();
                 
                 if (count($results) == 1){
                     $this->trigger(self::EVENT_ON_LOAD_BY_EMAIL_ADDRESS);
@@ -229,7 +229,7 @@ namespace adapt\users{
             if (!$this->is_loaded){
                 /* Check if the username and/or email address is unique */
                 if (strtolower($this->setting('users.username_type')) == 'username'){
-                    if (!isset($this->username)){
+                    if (!$this->username){
                         $this->error("Username required");
                         return false;
                     }
@@ -239,14 +239,14 @@ namespace adapt\users{
                         return false;
                     }
                     
-                    if (isset($this->contact->email)){
+                    if ($this->contact->email){
                         if (static::has_email_address($this->contact->email)){
                             $this->error("This email address has already been registered.");
                             return false;
                         }
                     }
                 }else{
-                    if (!isset($this->contact->email)){
+                    if (!$this->contact->email){
                         $this->error("Email is required");
                         return false;
                     }
@@ -256,9 +256,9 @@ namespace adapt\users{
                         return false;
                     }
                     
-                    if (isset($this->username)){
+                    if ($this->username){
                         if (static::has_username($this->username)){
-                            $this->error("Email has already been used.");
+                            $this->error("Username has already been used.");
                             return false;
                         }
                     }
@@ -275,6 +275,29 @@ namespace adapt\users{
             return $password;
         }
         
+        public static function has_email_address($email_address){
+            $adapt = $GLOBALS['adapt'];
+            $sql = $adapt->data_source->sql;    
+            $sql->select('u.*')
+                ->from('user', 'u')
+                ->join('contact', 'c', new sql_cond('u.contact_id', sql::EQUALS, 'c.contact_id'))
+                ->join('contact_email', 'ce', new sql_cond('c.contact_id', sql::EQUALS, 'ce.contact_id'))
+                ->where(
+                    new sql_and(
+                        new sql_cond('ce.email', sql::EQUALS, sql::q($email_address)),
+                        new sql_cond('u.date_deleted', sql::IS, new sql_null())
+                    )
+                );
+            
+            $results = $sql->execute(0)->results();
+            
+            if (is_array($results) && count($results)){
+                return true;
+            }
+            
+            return false;
+        }
+        
         public static function has_username($username){
             $adapt = $GLOBALS['adapt'];
             $sql = $adapt->data_source->sql;
@@ -286,18 +309,15 @@ namespace adapt\users{
                         new sql_cond('username', sql::EQUALS, q($username))
                     )
                 );
-            $results = $sql->execute()->results();
+            
+            $results = $sql->execute(0)->results();
             
             if (is_array($results) && count($results)){
-                return false;
+                return true;
             }
             
-            return true;
+            return false;
         }
         
-        public static function has_email_address($email_address){
-            $user = new model_user();
-            return !$user->load_by_email_address($email_address);
-        }
     }
 }

@@ -21,7 +21,7 @@ namespace adapt\users{
             if (parent::boot()){
                 
                 $this->dom->head->add(new adapt\html_link(array('type' => 'text/css', 'rel' => 'stylesheet', 'href' => "/adapt/users/users-{$this->version}/static/css/users.css")));
-
+                
                 /* Add user property to the session object */
                 \adapt\sessions\model_session::extend('pget_user', function($_this){
                     $user = $_this->store('users.user');
@@ -781,23 +781,21 @@ namespace adapt\users{
                             $c->surname = $user['contact']['surname'];
                             $c->nickname = $user['contact']['nickname'];
                             $c->date_of_birth = $user['contact']['date_of_birth'];
-                            $c->save();
+                            $u->add($c);
                             
                             if (is_array($user['contact']['contact_email'])){
                                 foreach($user['contact']['contact_email'] as $contact_email){
                                     $contact_email_type = new model_contact_email_type();
                                     if ($contact_email_type->load_by_name($contact_email['type'])){
                                         $ce = new model_contact_email();
-                                        $ce->contact_id = $c->contact_id;
                                         $ce->contact_email_type_id = $contact_email_type->contact_email_type_id;
                                         $ce->priority = $contact_email['priority'];
                                         $ce->email = $contact_email['email'];
                                         $ce->email_address_verified = $contact_email['email_verified'];
-                                        $ce->save();
+                                        $c->add($ce);
                                     }
                                 }
                             }
-                            $u->contact_id = $c->contact_id;
                         }
                         $u->save();
                     }
