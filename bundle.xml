@@ -47,6 +47,10 @@
                 <name>language_en_gb</name>
                 <version>1.0</version>
             </bundle>
+            <bundle>
+                <name>advanced_data_types</name>
+                <version>1.0</version>
+            </bundle>
         </depends_on>
         <language_strings>
             <string language="en_gb" key="Sign in" value="Sign in" />
@@ -96,9 +100,8 @@
                         <data_type>bigint</data_type>
                         <label>Contact #</label>
                     </field>
-                    <field name="username" index="Yes" index-size="64">
-                        <data_type>varchar</data_type>
-                        <max_length>128</max_length>
+                    <field name="username" index="Yes" index-size="32">
+                        <data_type>username</data_type>
                         <nullable>No</nullable>
                         <label>Username</label>
                     </field>
