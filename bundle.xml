@@ -186,16 +186,16 @@
                 <page>
                     <section repeatable="No" layout="standard">
                         <group layout="simple">
-                            <field type="Hidden" name="redirect_url" data-type="varchar" />
+                            <field type="Hidden" field-name="redirect_url" data-type="varchar" />
                         </group>
                         <group layout="simple">
-                            <field type="Text" name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
+                            <field type="Text" field-name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
                         </group>
                         <group layout="simple">
-                            <field type="Password" name="password" data-type="varchar" label="Password" max-length="64" mandatory="Yes" />
+                            <field type="Password" field-name="password" data-type="varchar" label="Password" max-length="64" mandatory="Yes" />
                         </group>
                         <group layout="simple">
-                            <field type="Checkbox" name="stay_signed_in" data-type="varchar" label="Keep me signed in">
+                            <field type="Checkbox" field-name="stay_signed_in" data-type="varchar" label="Keep me signed in">
                                 <allowed_values>
                                     <value>Yes</value>
                                 </allowed_values>
@@ -210,16 +210,16 @@
                 <page>
                     <section repeatable="No" layout="standard">
                         <group layout="simple">
-                            <field type="Hidden" name="redirect_url" data-type="varchar" />
+                            <field type="Hidden" field-name="redirect_url" data-type="varchar" />
                         </group>
                         <group layout="simple">
-                            <field type="Text" name="username" data-type="varchar" label="Username" placeholder-label="Choose a username..." max-length="128" mandatory="Yes" />
+                            <field type="Text" field-name="username" data-type="varchar" label="Username" placeholder-label="Choose a username..." max-length="128" mandatory="Yes" />
                         </group>
                         <group layout="simple">
-                            <field type="Password" name="password" data-type="varchar" label="Password" max-length="64" mandatory="Yes" />
+                            <field type="Password" field-name="password" data-type="varchar" label="Password" max-length="64" mandatory="Yes" />
                         </group>
                         <group layout="simple">
-                            <field type="Checkbox" name="stay_signed_in" data-type="varchar" label="Keep me signed in">
+                            <field type="Checkbox" field-name="stay_signed_in" data-type="varchar" label="Keep me signed in">
                                 <allowed_values>
                                     <value>Yes</value>
                                 </allowed_values>
@@ -234,13 +234,13 @@
                 <page>
                     <section layout="standard" repeatable="No">
                         <group layout="simple">
-                            <field type="Hidden" name="redirect_url" data-type="varchar" />
+                            <field type="Hidden" field-name="redirect_url" data-type="varchar" />
                         </group>
                         <group layout="simple">
-                            <field type="Text" name="username" data-type="varchar" label="Username" placeholder-label="Choose a username..." max-length="128" mandatory="Yes" />
+                            <field type="Text" field-name="username" data-type="varchar" label="Username" placeholder-label="Choose a username..." max-length="128" mandatory="Yes" />
                         </group>
                         <group layout="simple">
-                            <field type="Password confirmation with indicator" name="password" data-type="varchar" label="Password" max-length="64" mandatory="Yes" />
+                            <field type="Password confirmation with indicator" field-name="password" data-type="varchar" label="Password" max-length="64" mandatory="Yes" />
                         </group>
                     </section>
                     <button style="Primary" action="Next page" label="Join now" />
@@ -250,10 +250,10 @@
                 <page>
                     <section layout="standard" repeatable="No">
                         <group layout="simple">
-                            <field type="Hidden" name="redirect_url" data-type="varchar" />
+                            <field type="Hidden" field-name="redirect_url" data-type="varchar" />
                         </group>
                         <group layout="simple">
-                            <field type="Text" name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
+                            <field type="Text" field-name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
                         </group>
                         <group layout="simple">
                             <field type="Password confirmation with strength indicator" name="password" data-type="varchar" label="Password" max-length="64" mandatory="Yes" />
@@ -266,7 +266,7 @@
                 <page description="Tell us your email address and we will send you a link to choose a new password.">
                     <section layout="standard" repeatable="No">
                         <group layout="simple">
-                            <field type="Text" name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
+                            <field type="Text" field-name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
                         </group>
                     </section>
                     <button style="Primary" action="Next page" label="Reset My Password" />
@@ -276,10 +276,10 @@
                 <page description="Please choose a new password">
                     <section layout="standard" repeatable="No">
                         <group layout="simple">
-                            <field type="Hidden" name="token" data-type="varchar" max-length="64" />
+                            <field type="Hidden" field-name="token" data-type="varchar" max-length="64" />
                         </group>
                         <group layout="simple">
-                            <field type="Password confirmation with strength indicator" name="new_password" data-type="varchar" label="New Password" max-length="64" mandatory="Yes" />
+                            <field type="Password confirmation with strength indicator" field-name="new_password" data-type="varchar" label="New Password" max-length="64" mandatory="Yes" />
                         </group>
                     </section>
                     <button style="Primary" action="Next page" label="Reset Password" />
@@ -289,10 +289,10 @@
                 <page description="Please enter your current password before choosing a new one.">
                     <section layout="standard" repeatable="No">
                         <group layout="simple">
-                            <field type="Password" name="current_password" data-type="varchar" label="Current Password" max-length="64" mandatory="Yes" />
+                            <field type="Password" field-name="current_password" data-type="varchar" label="Current Password" max-length="64" mandatory="Yes" />
                         </group>
                         <group layout="simple">
-                            <field type="Password confirmation with strength indicator" name="new_password" data-type="varchar" label="New Password" max-length="64" mandatory="Yes" />
+                            <field type="Password confirmation with strength indicator" field-name="new_password" data-type="varchar" label="New Password" max-length="64" mandatory="Yes" />
                         </group>
                     </section>
                     <button style="Primary" action="Next page" label="Change Password" />
@@ -302,7 +302,7 @@
                 <page description="We've emailed with instruction on how to verify your email, we you did not receive it please check your email address is correct below and press re-send.">
                     <section layout="standard" repeatable="No">
                         <group layout="simple">
-                            <field type="Text" name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
+                            <field type="Text" field-name="email" data-type="email_address" label="Email" placeholder-label="someone@example.com" max-length="256" mandatory="Yes" />
                         </group>
                     </section>
                     <button style="Primary" action="Next page" label="Re-send Verification" />
