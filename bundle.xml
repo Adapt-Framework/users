@@ -17,7 +17,7 @@
             </bundle>
             <bundle>
                 <name>sessions</name>
-                <version>1.0</version>
+                <version>0.8</version>
             </bundle>
             <bundle>
                 <name>bootstrap_views</name>
@@ -25,11 +25,11 @@
             </bundle>
             <bundle>
                 <name>form_password_confirm</name>
-                <version>1.0</version>
+                <version>0.8</version>
             </bundle>
             <bundle>
                 <name>email</name>
-                <version>1.0</version>
+                <version>0.8</version>
             </bundle>
             <bundle>
                 <name>adapt</name>
@@ -37,15 +37,15 @@
             </bundle>
             <bundle>
                 <name>scheduler</name>
-                <version>1.0</version>
+                <version>0.7</version>
             </bundle>
             <bundle>
                 <name>language</name>
-                <version>1.0</version>
+                <version>0.7</version>
             </bundle>
             <bundle>
                 <name>language_en_gb</name>
-                <version>1.0</version>
+                <version>0.7</version>
             </bundle>
             <bundle>
                 <name>advanced_data_types</name>
