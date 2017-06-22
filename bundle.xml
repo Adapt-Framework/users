@@ -9,7 +9,17 @@
         <version_status>release</version_status>
         <availability>public</availability>
         <description>Provides the base models for building user centric apps</description>
-        <copyright>2016 Adapt Framework</copyright>
+        <copyright>2017 Matt Bruton</copyright>
+        <vendor>
+            <name>Adapt Framework</name>
+            <website>https://www.adaptframework.com</website>
+        </vendor>
+        <authors>
+            <author>
+                <name>Matt Bruton</name>
+                <email>matt.bruton@gmail.com</email>
+            </author>
+        </authors>
         <depends_on>
             <bundle>
                 <name>contacts</name>
