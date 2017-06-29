@@ -705,6 +705,7 @@ namespace adapt\users{
                                 case "username":
                                 case "password":
                                 case "password_change_required":
+                                case "hashed_password":
                                     $user[$child_node->tag] = $child_node->get(0);
                                     break;
                                 case "contact":
@@ -750,7 +751,7 @@ namespace adapt\users{
                                 }
                             }
                         }
-                        if (!is_array($this->_users[$bundle->name])) $this->_users[$bundle_name] = [];
+                        if (!is_array($this->_users[$bundle->name])) $this->_users[$bundle->name] = [];
                         $this->_users[$bundle->name][] = $user;
                     }
                 }
@@ -758,49 +759,67 @@ namespace adapt\users{
         }
         
         public function install_users($bundle){
+            $extensions = $this->store('adapt.extensions');
+            $this->store('adapt.extensions', []);
             if ($bundle instanceof \adapt\bundle){
                 if (is_array($this->_users[$bundle->name])){
                     foreach($this->_users[$bundle->name] as $user){
-                        $u = new model_user();
+                        $u = new \adapt\users\model_user();
                         
-                        foreach($user as $key => $value){
-                            if ($key != "contact"){
-                                $u->$key = $value;
+                        if($u->load_by_username($user['username'])){
+                            $user_hash = $u->to_hash();
+                            $contact = $user['contact'];
+                            unset($user['contact']);
+                            $contact_email = $contact['contact_email'];
+                            unset($contact['contact_email']);
+                            $user_data['user'] = array_merge($user_hash['user'],$user);
+                            $user_data['contact'] = array_merge($user_hash['contact'],$contact);
+                            $user_data['contact_email'] = array_merge($user_hash['contact_email'],$contact_email);
+                            $u->push($user_data);
+                            $u->save();
+                        }else{
+                            $u->errors(true);
+                            foreach($user as $key => $value){
+                                if ($key != "contact"){
+                                    $u->$key = $value;
+                                }
                             }
-                        }
-                        
-                        if (is_array($user['contact'])){
-                            $c = new model_contact();
-                            $country = new model_country();
-                            if ($country->load_by_name($user['contact']['country'])){
-                                $c->country_id = $country->country_id;
-                            }
-                            $c->title = $user['contact']['title'];
-                            $c->forename = $user['contact']['forename'];
-                            $c->middle_names = $user['contact']['middle_names'];
-                            $c->surname = $user['contact']['surname'];
-                            $c->nickname = $user['contact']['nickname'];
-                            $c->date_of_birth = $user['contact']['date_of_birth'];
-                            $u->add($c);
-                            
-                            if (is_array($user['contact']['contact_email'])){
-                                foreach($user['contact']['contact_email'] as $contact_email){
-                                    $contact_email_type = new model_contact_email_type();
-                                    if ($contact_email_type->load_by_name($contact_email['type'])){
-                                        $ce = new model_contact_email();
-                                        $ce->contact_email_type_id = $contact_email_type->contact_email_type_id;
-                                        $ce->priority = $contact_email['priority'];
-                                        $ce->email = $contact_email['email'];
-                                        $ce->email_address_verified = $contact_email['email_verified'];
-                                        $c->add($ce);
+
+                            if (is_array($user['contact'])){
+                                $c = new model_contact();
+                                $country = new model_country();
+                                if ($country->load_by_name($user['contact']['country'])){
+                                    $c->country_id = $country->country_id;
+                                }
+                                $c->title = $user['contact']['title'];
+                                $c->forename = $user['contact']['forename'];
+                                $c->middle_names = $user['contact']['middle_names'];
+                                $c->surname = $user['contact']['surname'];
+                                $c->nickname = $user['contact']['nickname'];
+                                $c->date_of_birth = $user['contact']['date_of_birth'];
+                                $u->add($c);
+
+                                if (is_array($user['contact']['contact_email'])){
+                                    foreach($user['contact']['contact_email'] as $contact_email){
+                                        $contact_email_type = new model_contact_email_type();
+                                        if ($contact_email_type->load_by_name($contact_email['type'])){
+                                            $ce = new model_contact_email();
+                                            $ce->contact_email_type_id = $contact_email_type->contact_email_type_id;
+                                            $ce->priority = $contact_email['priority'];
+                                            $ce->email = $contact_email['email'];
+                                            $ce->email_address_verified = $contact_email['email_verified'];
+                                            $c->add($ce);
+                                        }
                                     }
                                 }
                             }
+                            $u->save();
                         }
-                        $u->save();
                     }
                 }
             }
+            
+            $this->store('adapt.extensions', $extensions);
         }
         
     }

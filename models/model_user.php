@@ -35,6 +35,28 @@ namespace adapt\users{
             $this->_auto_load_children = true;
         }
         
+        public function pget_is_password_hashed()
+        {
+            return $this->_is_password_hashed;
+        }
+        
+        public function pset_is_password_hashed($value)
+        {
+            $this->_is_password_hashed = $value;
+            
+        }
+        
+        public function pset_hashed_password($password){
+            $this->data['password'] = $password;
+            $this->_changed_fields['password'] = array(
+                'old_value' => '',
+                'new_value' => $password
+            );
+            $this->_has_changed = true;
+            
+            $this->password_change_required = 'No';
+        }
+        
         public function mset_password($value){
             $value = self::hash_password($value);
             $this->_changed_fields['password'] = array(
