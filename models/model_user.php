@@ -198,7 +198,7 @@ namespace adapt\users{
             if (is_null($value)){
                 foreach($children as $child){
                     if ($child instanceof \adapt\model && $child->table_name == 'user_setting'){
-                        if ($child->name == $key){
+                        if ($child->key_name == $key){
                             return $child->value;
                         }
                     }
@@ -207,7 +207,7 @@ namespace adapt\users{
             }else{
                 foreach($children as $child){
                     if ($child instanceof \adapt\model && $child->table_name == 'user_setting'){
-                        if ($child->name == $key){
+                        if ($child->key_name == $key){
                             $child->value = $value;
                             return null;
                         }
@@ -216,7 +216,7 @@ namespace adapt\users{
                 
                 /* We didn't find the setting, so let create a new one */
                 $setting = new model_user_setting();
-                $setting->name = $key;
+                $setting->key_name = $key;
                 $setting->value = $value;
                 $this->add($setting);
             }
@@ -230,7 +230,7 @@ namespace adapt\users{
             
             foreach($children as $child){
                 if ($child instanceof \adapt\model && $child->table_name == 'user_setting'){
-                    $output[$child->name] = $child->value;
+                    $output[$child->key_name] = $child->value;
                 }
             }
             

@@ -3,7 +3,7 @@
     <bundle>
         <name>users</name>
         <label>Adapt Users</label>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
         <type>extension</type>
         <namespace>\adapt\users</namespace>
         <version_status>release</version_status>
@@ -135,7 +135,7 @@
                         <data_type>bigint</data_type>
                         <label>User #</label>
                     </field>
-                    <field name="name" index="Yes" index-size="32">
+                    <field name="key_name" index="Yes" index-size="32">
                         <data_type>varchar</data_type>
                         <max_length>64</max_length>
                         <nullable>no</nullable>
