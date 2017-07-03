@@ -759,6 +759,10 @@ namespace adapt\users{
         }
         
         public function install_users($bundle){
+            /* The next two lines remove all class extensions so that we are able
+             * to by-pass any load/save permitters that may have been added by
+             * the application
+             */
             $extensions = $this->store('adapt.extensions');
             $this->store('adapt.extensions', []);
             if ($bundle instanceof \adapt\bundle){
@@ -819,6 +823,7 @@ namespace adapt\users{
                 }
             }
             
+            /* Restore all class extensions */
             $this->store('adapt.extensions', $extensions);
         }
         
@@ -826,5 +831,3 @@ namespace adapt\users{
     
     
 }
-
-?>
