@@ -290,7 +290,7 @@ namespace adapt\users{
             return parent::save();
         }
         
-        public static function hash_password($password, $salt = ''){ // $salt is now depricated and should be removed
+        public static function hash_password($password, $salt = ''){ // $salt is now deprecated and should be removed
             
             $password = password_hash($password, PASSWORD_DEFAULT, ['cost' => 12]);
 
