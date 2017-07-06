@@ -151,8 +151,17 @@ namespace adapt\users{
                 
                 $sql->select('u.*')
                     ->from($this->table_name, 'u')
-                    ->join('contact', 'c', new sql_cond('u.contact_id', sql::EQUALS, 'c.contact_id'))
-                    ->join('contact_email', 'ce', new sql_cond('c.contact_id', sql::EQUALS, 'ce.contact_id'))
+                    ->join('contact', 'c', 
+                           new sql_and(
+                               new sql_cond('u.contact_id', sql::EQUALS, 'c.contact_id')),
+                               new sql_cond('u.date_deleted', sql::IS, sql::NULL)
+                           )
+                    ->join('contact_email', 'ce', 
+                        new sql_and(
+                            new sql_cond('c.contact_id', sql::EQUALS, 'ce.contact_id'),
+                            new sql_cond('ce.date_deleted', sql::IS, sql::NULL)
+                        )
+                    )
                     ->where(
                         new sql_and(
                             new sql_cond('ce.email', sql::EQUALS, sql::q($email_address)),
@@ -302,8 +311,18 @@ namespace adapt\users{
             $sql = $adapt->data_source->sql;    
             $sql->select('u.*')
                 ->from('user', 'u')
-                ->join('contact', 'c', new sql_cond('u.contact_id', sql::EQUALS, 'c.contact_id'))
-                ->join('contact_email', 'ce', new sql_cond('c.contact_id', sql::EQUALS, 'ce.contact_id'))
+                ->join('contact', 'c', 
+                    new sql_and(
+                        new sql_cond('u.contact_id', sql::EQUALS, 'c.contact_id'),
+                        new sql_cond('c.date_deleted', sql::IS, sql::NULL)
+                    )
+                )
+                ->join('contact_email', 'ce', 
+                    new sql_and(
+                        new sql_cond('c.contact_id', sql::EQUALS, 'ce.contact_id'),
+                        new sql_cond('ce.date_deleted', sql::IS, sql::NULL)
+                    )
+                )
                 ->where(
                     new sql_and(
                         new sql_cond('ce.email', sql::EQUALS, sql::q($email_address)),
