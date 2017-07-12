@@ -770,18 +770,7 @@ namespace adapt\users{
                     foreach($this->_users[$bundle->name] as $user){
                         $u = new \adapt\users\model_user();
                         
-                        if($u->load_by_username($user['username'])){
-                            $user_hash = $u->to_hash();
-                            $contact = $user['contact'];
-                            unset($user['contact']);
-                            $contact_email = $contact['contact_email'];
-                            unset($contact['contact_email']);
-                            $user_data['user'] = array_merge($user_hash['user'],$user);
-                            $user_data['contact'] = array_merge($user_hash['contact'],$contact);
-                            $user_data['contact_email'] = array_merge($user_hash['contact_email'],$contact_email);
-                            $u->push($user_data);
-                            $u->save();
-                        }else{
+                        if(!$u->load_by_username($user['username'])){
                             $u->errors(true);
                             foreach($user as $key => $value){
                                 if ($key != "contact"){
