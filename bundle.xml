@@ -110,7 +110,7 @@
                         <data_type>bigint</data_type>
                         <label>Contact #</label>
                     </field>
-                    <field name="username" index="Yes" index-size="32">
+                    <field name="username" index="Yes" index-size="48">
                         <data_type>username</data_type>
                         <nullable>No</nullable>
                         <label>Username</label>
