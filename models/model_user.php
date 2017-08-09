@@ -28,6 +28,7 @@ namespace adapt\users{
             /* We need to limit what we auto load */
             $this->_auto_load_only_tables = array(
                 'contact',
+                'user_data',
                 'user_setting'
             );
             
@@ -35,6 +36,71 @@ namespace adapt\users{
             $this->_auto_load_children = true;
         }
         
+        /**
+         * Magic getter to store non-user object data in the
+         * the user_data table
+         * @return mixed
+         */
+        public function __get($key) {
+            $value = parent::__get($key);
+            
+            if (!is_null($value)){
+                return $value;
+            }
+            
+            /* Do we have the data in one of our children? */
+            $children = $this->get();
+            
+            foreach($children as $child){
+                if ($child instanceof \adapt\model && $child->table_name == "user_data"){
+                    if ($child->user_data_key == $key){
+                        return $child->data;
+                    }
+                }
+            }
+            
+            return null;
+        }
+        
+        public function __set($key, $value){
+            $return = parent::__set($key, $value);
+            
+            if ($return === false){
+                $this->_has_changed = true;
+                
+                $children = $this->get();
+                foreach($children as $child){
+                    if ($child instanceof \adapt\model && $child->table_name == "user_data"){
+                        if ($child->user_data_key == $key){
+                            $child->data = $value;
+                            return true;
+                        }
+                    }
+                }
+                
+                $user_data = new model_user_data();
+                $user_data->user_data_key = $key;
+                $user_data->data = $value;
+                $this->add($user_data);
+                return true;
+            }
+            
+            return $return;
+        }
+        
+        public function to_hash(){
+            $hash = parent::to_hash();
+            unset($hash['user_data']);
+            $children = $this->get();
+            foreach($children as $child){
+                if ($child instanceof \adapt\model && $child->table_name == "user_data"){
+                    $hash['user'][$child->user_data_key] = $child->data;
+                }
+            }
+            
+            return $hash;
+        }
+
         public function pget_is_password_hashed()
         {
             return $this->_is_password_hashed;
