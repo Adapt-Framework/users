@@ -3,7 +3,7 @@
     <bundle>
         <name>users</name>
         <label>Adapt Users</label>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
         <type>extension</type>
         <namespace>\adapt\users</namespace>
         <version_status>release</version_status>
