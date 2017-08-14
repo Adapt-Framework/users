@@ -94,7 +94,9 @@ namespace adapt\users{
             $children = $this->get();
             foreach($children as $child){
                 if ($child instanceof \adapt\model && $child->table_name == "user_data"){
-                    $hash['user'][$child->user_data_key] = $child->data;
+                    if (!isset($hash['user'][$child->user_data_key])){
+                        $hash['user'][$child->user_data_key] = $child->data;
+                    }
                 }
             }
             
