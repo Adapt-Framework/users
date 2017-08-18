@@ -34,6 +34,11 @@ namespace adapt\users{
             
             /* Switch on auto loading */
             $this->_auto_load_children = true;
+
+            $this->_suppress_fields = $this->suppress_fields_list;
+            if ($this->_suppress_fields === null) {
+                $this->_suppress_fields = [];
+            }
         }
         
         /**
