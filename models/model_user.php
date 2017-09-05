@@ -34,6 +34,11 @@ namespace adapt\users{
             
             /* Switch on auto loading */
             $this->_auto_load_children = true;
+
+            $this->_suppress_fields = $this->suppress_fields_list;
+            if ($this->_suppress_fields === null) {
+                $this->_suppress_fields = [];
+            }
         }
         
         /**
@@ -94,10 +99,10 @@ namespace adapt\users{
             $children = $this->get();
             foreach($children as $child){
                 if ($child instanceof \adapt\model && $child->table_name == "user_data"){
-			if (!isset($hash['user'][$child->user_data_key])){
-				                        $hash['user'][$child->user_data_key] = $child->data;
-							                    }
-		}
+                    if (!isset($hash['user'][$child->user_data_key])){
+                        $hash['user'][$child->user_data_key] = $child->data;
+                    }
+                }
             }
             
             return $hash;
