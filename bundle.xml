@@ -3,7 +3,7 @@
     <bundle>
         <name>users</name>
         <label>Adapt Users</label>
-        <version>1.0.3</version>
+        <version>1.0.5</version>
         <type>extension</type>
         <namespace>\adapt\users</namespace>
         <version_status>release</version_status>
@@ -124,6 +124,26 @@
                         <data_type>enum('Yes', 'No')</data_type>
                         <default_value>No</default_value>
                         <label>Must change password</label>
+                    </field>
+                </table>
+                <table name="user_data">
+                    <field name="user_data_id" key="primary" auto-increment="Yes">
+                        <data_type>bigint</data_type>
+                        <label>User data #</label>
+                    </field>
+                    <field name="user_id" key="foreign" referenced-table-name="user" referenced-field-name="user_id">
+                        <data_type>bigint</data_type>
+                        <label>User #</label>
+                    </field>
+                    <field name="user_data_key" index="Yes" index-size="64">
+                        <data_type>varchar</data_type>
+                        <max_length>64</max_length>
+                        <nullable>No</nullable>
+                        <label>Key</label>
+                    </field>
+                    <field name="data">
+                        <data_type>text</data_type>
+                        <label>Data</label>
                     </field>
                 </table>
                 <table name="user_setting">
